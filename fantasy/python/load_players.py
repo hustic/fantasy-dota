@@ -1,7 +1,4 @@
 import requests
-import json
-
-import pandas as pd
 
 from sayn import PythonTask
 
@@ -10,14 +7,6 @@ class LoadData(PythonTask):
     # Dimensions
     teams = [15, 39, 1883502, 7390454, 5, 8214850, 8255756, 2586976, 7119388,
              726228, 1838315, 6209166, 111474, 8254400, 7391077, 8260983, 8204512, 350190]
-
-    def dict_clean(self, items):
-        result = {}
-        for key, value in items:
-            if value is None:
-                value = 'default'
-            result[key] = value
-        return result
 
     def run(self):
 
