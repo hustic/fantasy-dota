@@ -2,6 +2,22 @@
 # Please see the task overview section of the documentation for more details:
 # https://173tech.github.io/sayn/tasks/overview/
 
+presets:
+  modelling:
+    type: autosql
+    file_name: '{{ task.name }}.sql'
+    materialisation: table
+    destination:
+      table: '{{ task.name }}'
+
+  load_get:
+    type: python
+    class: load_get.LoadData
+
+
+
+
+
 # Task groups define at minimum a set of tasks
 # To run the tutorial, run the command 'sayn run' from the project folder's root
 tasks:
@@ -10,29 +26,49 @@ tasks:
   # python tasks are stored into the python folder
   # this task loads some data into our SQLite database
   load_teams:
-    type: python
-    class: load_teams.LoadData
+    preset: load_get
+    parameters:
+      name: teams
+      api_call: teams
+      filter: 1
+      keys_drop:
+        - 'logo_url'
+
 
   load_players:
-    type: python
-    class: load_players.LoadData
+    preset: load_get
+    parameters:
+      name: players
+      api_call: proPlayers
+      filter: 0
+      keys_drop:
+        - 'steamid' 
+        - 'avatar'
+        - 'avatarmedium'
+        - 'avatarfull'
+        - 'profileurl' 
+        - 'personaname'
+        - 'last_login'
+        - 'full_history_time'
+        - 'cheese'
+        - 'fh_unavailable'
+        - 'loccountrycode'
+        - 'last_match_time'
+        - 'plus'
+        - 'country_code'
+        - 'team_name'
+        - 'locked_until'
+        - 'is_locked'
+        - 'is_pro'
 
   dim_players:
-    type: autosql
-    file_name: dim_players.sql
-    materialisation: table
-    destination:
-      table: dim_players
+    preset: modelling
     parents:
       - load_players
       - load_teams
 
   dim_teams:
-    type: autosql
-    file_name: dim_teams.sql
-    materialisation: table
-    destination:
-      table: dim_teams
+    preset: modelling
     parents:
       - load_teams
 
