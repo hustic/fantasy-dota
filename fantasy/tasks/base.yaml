@@ -62,12 +62,22 @@ tasks:
         - 'locked_until'
         - 'is_locked'
         - 'is_pro'
+  
+
+  load_roles:
+    type: python
+    class: load_roles.LoadData
+    parameters:
+      url_ti10:  'https://liquipedia.net/dota2/The_International/2021'
+      base_url_liq: 'https://liquipedia.net'
+
 
   dim_players:
     preset: modelling
     parents:
       - load_players
       - load_teams
+      - load_roles
 
   dim_teams:
     preset: modelling
