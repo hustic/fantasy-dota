@@ -13,10 +13,12 @@ presets:
   load_get:
     type: python
     class: load_get.LoadData
+    tags: load
 
   load_get_multi:
     type: python
     class: load_get_multi.LoadData
+    tags: load
 
 
 
@@ -24,11 +26,9 @@ presets:
 
 # Task groups define at minimum a set of tasks
 # To run the tutorial, run the command 'sayn run' from the project folder's root
-tasks:
-  # python
-  # here we define a Python task
-  # python tasks are stored into the python folder
-  # this task loads some data into our SQLite database
+tasks:  
+
+  # Loading 
   load_teams:
     preset: load_get
     parameters:
@@ -62,6 +62,7 @@ tasks:
         - 'locked_until'
         - 'is_locked'
         - 'is_pro'
+        - 'fantasy_role'
   
 
   load_roles:
@@ -72,28 +73,64 @@ tasks:
       base_url_liq: 'https://liquipedia.net'
 
 
-  dim_players:
-    preset: modelling
-    parents:
-      - load_players
-      - load_teams
-      - load_roles
-
-  dim_teams:
-    preset: modelling
-
-  f_teams:
-    preset: modelling
-    parent:
-      - dim_teams
-
-  logs_proMatches:
+  load_proMatches:
     preset: load_get_multi
     parameters:
       name: matches
       api_call: proMatches
+      len: 10000
       keys_drop:
-        - ''
+        - 'radiant_name'
+        - 'dire_name'
+        - 'league_name'
+
+
+  # Dimensions
+  dim_players:
+    preset: modelling
+    tags: dim
+    parents:
+      - load_players
+      - load_teams
+      - load_roles
+      - missing_players
+
+
+  dim_teams:
+    preset: modelling
+    tags: dim
+
+
+  dim_matches:
+    preset: modelling
+    tags: dim
+    parameters:
+      date: '2021-05-01'
+    parents:
+      - dim_teams
+      - load_proMatches
+
+
+  # Facts
+  f_teams:
+    preset: modelling
+    tags: fact
+    parent:
+      - dim_teams
+
+
+  f_players:
+    preset: modelling
+    tags: fact
+    parent:
+      - dim_players
+
+
+  # Helper
+  missing_players:
+    preset: modelling
+    tags: helper
+
 
   # autosql
   # autosql tasks enable to write a SELECT statement and SAYN creates the table / view automatically

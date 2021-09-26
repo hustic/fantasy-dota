@@ -14,7 +14,7 @@ class LoadData(PythonTask):
         api_call = self.parameters['api_call']
         name = self.parameters['name']
 
-        minimum_number_of_matches = 1000
+        minimum_number_of_matches = self.parameters['len']
 
         self.set_run_steps(
             [
@@ -40,6 +40,7 @@ class LoadData(PythonTask):
                 matches += resp
                 tmp_ids = [r['match_id'] for r in resp]
                 min_id = min(tmp_ids)
+
 
         with self.step('Drop Columns'):
             data = []

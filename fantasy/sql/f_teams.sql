@@ -7,4 +7,4 @@ SELECT lt.team_id
      , lt.losses
   FROM logs_teams AS lt
   JOIN dim_teams AS dt
-    ON lt.tag = dt.tag
+    ON lt.team_id = dt.team_id
