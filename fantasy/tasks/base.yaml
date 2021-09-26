@@ -85,6 +85,11 @@ tasks:
         - 'league_name'
 
 
+  load_ind_matches:
+    type: python
+    class: load_post.LoadData
+    
+
   # Dimensions
   dim_players:
     preset: modelling
