@@ -30,7 +30,6 @@ tasks:
     parameters:
       name: teams
       api_call: teams
-      filter: 1
       keys_drop:
         - 'logo_url'
 
@@ -40,7 +39,6 @@ tasks:
     parameters:
       name: players
       api_call: proPlayers
-      filter: 0
       keys_drop:
         - 'steamid' 
         - 'avatar'
@@ -69,8 +67,11 @@ tasks:
 
   dim_teams:
     preset: modelling
-    parents:
-      - load_teams
+
+  f_teams:
+    preset: modelling
+    parent:
+      - dim_teams
 
   # autosql
   # autosql tasks enable to write a SELECT statement and SAYN creates the table / view automatically
