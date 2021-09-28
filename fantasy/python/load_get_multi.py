@@ -1,4 +1,5 @@
 import requests
+import time
 
 from sayn import PythonTask
 
@@ -36,11 +37,12 @@ class LoadData(PythonTask):
             min_id = min(tmp_ids)
 
             while len(matches) <= minimum_number_of_matches:
-                resp = requests.get(f'{base_url}/{api_call}?api_key={api_key}&less_than_match_id={min_id}').json()
+                resp = requests.get(
+                    f'{base_url}/{api_call}?api_key={api_key}&less_than_match_id={min_id}').json()
                 matches += resp
                 tmp_ids = [r['match_id'] for r in resp]
                 min_id = min(tmp_ids)
-
+                time.sleep(0.4)
 
         with self.step('Drop Columns'):
             data = []
@@ -48,7 +50,7 @@ class LoadData(PythonTask):
                 for key in keys_to_drop:
                     r.pop(key, None)
                 data.append(r)
-        
+
         with self.step(f'Load {name}'):
             self.default_db.load_data(f"logs_{name}", data, replace=True)
 
