@@ -26,9 +26,9 @@ presets:
 
 # Task groups define at minimum a set of tasks
 # To run the tutorial, run the command 'sayn run' from the project folder's root
-tasks:  
+tasks:
 
-  # Loading 
+  # Loading
   load_teams:
     preset: load_get
     parameters:
@@ -44,11 +44,11 @@ tasks:
       name: players
       api_call: proPlayers
       keys_drop:
-        - 'steamid' 
+        - 'steamid'
         - 'avatar'
         - 'avatarmedium'
         - 'avatarfull'
-        - 'profileurl' 
+        - 'profileurl'
         - 'personaname'
         - 'last_login'
         - 'full_history_time'
@@ -63,7 +63,7 @@ tasks:
         - 'is_locked'
         - 'is_pro'
         - 'fantasy_role'
-  
+
 
   load_roles:
     type: python
@@ -83,6 +83,16 @@ tasks:
         - 'radiant_name'
         - 'dire_name'
         - 'league_name'
+
+
+  load_jobs:
+    type: python
+    class: load_post.LoadData
+
+
+  request_matches:
+    type: python
+    class: load_requests.LoadData
 
 
   # Dimensions
