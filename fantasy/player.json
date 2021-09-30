@@ -62,5 +62,9 @@
   "purchase_tpscroll": 1,
   "actions_per_min": 460,
   "life_state_dead": 196,
-  "rank_tier": 80
+  "rank_tier": 80,
+  "gold_t": [],
+  "lh_t": [],
+  "dn_t": [],
+  "xp_t": []
 }

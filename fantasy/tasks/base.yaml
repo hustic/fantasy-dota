@@ -88,11 +88,15 @@ tasks:
   load_jobs:
     type: python
     class: load_post.LoadData
+    parents:
+      - dim_matches
 
 
   request_matches:
     type: python
     class: load_requests.LoadData
+    parents:
+      - load_jobs
 
 
   # Dimensions
