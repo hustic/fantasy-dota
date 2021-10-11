@@ -7,6 +7,8 @@ from sayn import PythonTask
 class LoadData(PythonTask):
 
     def run(self):
+        def replace_none(some_dict):
+            return {k: (0 if v is None else v) for k, v in some_dict.items()}
 
         base_url = self.parameters['base_url']
         api_key = self.parameters['api_key']
@@ -50,6 +52,9 @@ class LoadData(PythonTask):
                 for key in keys_to_drop:
                     r.pop(key, None)
                 data.append(r)
+            data = [replace_none(d) for d in data]
+
+        # print(data)
 
         with self.step(f'Load {name}'):
             self.default_db.load_data(f"logs_{name}", data, replace=True)

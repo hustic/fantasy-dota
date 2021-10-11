@@ -5,7 +5,7 @@ import json
 import time
 
 from pathos.helpers import cpu_count
-from p_tqdm import p_umap
+from p_tqdm import p_map
 from tqdm import tqdm
 
 from sayn import PythonTask
@@ -15,7 +15,7 @@ class LoadData(PythonTask):
 
     def setup(self):
         self.query = """
-                SELECT match_id FROM dim_matches GROUP BY match_id;
+                SELECT match_id FROM dim_matches WHERE leagueid=13256 GROUP BY match_id;
         """
         return self.success()
 
@@ -37,11 +37,14 @@ class LoadData(PythonTask):
             match_ids = self.default_db.read_data(self.query)
             match_ids = [list(d.values())[0] for d in match_ids]
 
+        print(match_ids)
+
         def get_job_id(m, base_url, api_key):
+
             retry_strategy = Retry(
                 total=10,
-                status_forcelist=(429, 500, 502, 503, 504),
-                backoff_factor=2
+                status_forcelist=[400, 429, 500, 502, 503, 504],
+                backoff_factor=10
             )
             adapter = HTTPAdapter(max_retries=retry_strategy)
             http = requests.Session()
@@ -51,18 +54,19 @@ class LoadData(PythonTask):
                 f'{base_url}/request/{m}?api_key={api_key}')
 
             try:
+
                 job_id = request.json()['job']['jobId']
                 res = {'match_id': m, 'job_id': job_id, 'active': True}
             except:
                 print(request)
 
-            time.sleep(float(cpu_count())*0.05)
+            time.sleep(float(cpu_count())*0.5)
             return res
 
         with self.step("Submit jobs"):
             jobs = []
 
-            jobs = p_umap(get_job_id, match_ids, [base_url for m in match_ids], [
+            jobs = p_map(get_job_id, match_ids, [base_url for m in match_ids], [
                                 api_key for m in match_ids])
 
             job_ids = [j['job_id'] for j in jobs]
@@ -76,7 +80,7 @@ class LoadData(PythonTask):
                     if resp.text == 'null':
                         del job_ids[i]
                         pbar.update(1)
-                    time.sleep(0.05)
+                time.sleep(0.05)
             pbar.close()
 
         with self.step("Load Jobs"):

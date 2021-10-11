@@ -78,7 +78,7 @@ tasks:
     parameters:
       name: matches
       api_call: proMatches
-      len: 10000
+      len: 100
       keys_drop:
         - 'radiant_name'
         - 'dire_name'
@@ -119,7 +119,7 @@ tasks:
     preset: modelling
     tags: dim
     parameters:
-      date: '2021-05-01'
+      date: '2021-10-06'
     parents:
       - dim_teams
       - load_proMatches
